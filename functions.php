@@ -48,7 +48,7 @@ function dbLogin($pdo, $username, $password)
     $statement->execute(array($username));
     $user = $statement->fetch(PDO::FETCH_ASSOC);
     if ($user !== false) {
-        if ($user['password'] === $password) {
+        if ( hashVerify($password, $user['password'])) {
             return true;
         }
     }
@@ -60,9 +60,17 @@ function passwordHash($password){
     return $hash = password_hash($password, PASSWORD_DEFAULT);
 }
 
-function addUser($pdo, $username, $password){
-    $statement = $pdo->prepare("insert into user (username, password) values(?,?)");
+function hashVerify($password, $hash){
+    return password_verify($password, $hash);
+}
+function addUser($pdo, $username, $Vorname, $Nachname, $e_mail,$password){
+    $statement = $pdo->prepare("insert into user (username, Vorname, Nachname,e_mail, password) values(?,?,?,?,?)");
     $hashPassword = passwordHash($password);
-    $statement->execute(array($username, $hashPassword));
+    $statement->execute(array($username,$Vorname, $Nachname, $e_mail,$hashPassword));
 
+}
+
+function deleteUsers(PDO $db, $username, $password){
+    $stmt = $db->prepare('DELETE FROM user');
+    $stmt->execute(array($username, $password));
 }
