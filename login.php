@@ -29,6 +29,7 @@ if (isset($_POST['submit'])) {
     $password = $_POST['Userpswd'];
     if (dbLogin($db, $name, $password)) {
         unset($_SESSION['zaehler']);
+        $_SESSION['username'] = $name;
         header("Location: /management.php");
     }
     else{
