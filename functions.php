@@ -48,7 +48,7 @@ function dbLogin($pdo, $username, $password)
     $statement->execute(array($username));
     $user = $statement->fetch(PDO::FETCH_ASSOC);
     if ($user !== false) {
-        if ( hashVerify($password, $user['password'])) {
+        if (hashVerify($password, $user['password'])) {
             return true;
         }
     }
@@ -56,21 +56,37 @@ function dbLogin($pdo, $username, $password)
     return false;
 }
 
-function passwordHash($password){
+function passwordHash($password)
+{
     return $hash = password_hash($password, PASSWORD_DEFAULT);
 }
 
-function hashVerify($password, $hash){
+function hashVerify($password, $hash)
+{
     return password_verify($password, $hash);
 }
-function addUser($pdo, $username, $Vorname, $Nachname, $e_mail,$password){
+
+function addUser($pdo, $username, $Vorname, $Nachname, $e_mail, $password)
+{
     $statement = $pdo->prepare("insert into user (username, Vorname, Nachname,e_mail, password) values(?,?,?,?,?)");
     $hashPassword = passwordHash($password);
-    $statement->execute(array($username,$Vorname, $Nachname, $e_mail,$hashPassword));
-
+    $statement->execute(array($username, $Vorname, $Nachname, $e_mail, $hashPassword));
 }
 
-function deleteUsers(PDO $db, $username, $password){
-    $stmt = $db->prepare('DELETE FROM user');
-    $stmt->execute(array($username, $password));
+function deleteUsers(PDO $db, $id)
+{
+    $stmt = $db->prepare("DELETE FROM user where id = ?");
+    $stmt->execute(array($id));
+}
+
+function searchId($pdo, $id){
+    $statement = $pdo->prepare("SELECT * FROM user WHERE id = ?");
+    $statement->execute(array($id));
+    return $user = $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function changeUser($pdo, $id,$username, $Vorname, $Nachname, $e_mail){
+    $statement = $pdo->prepare("UPDATE user SET username = ?, Vorname = ?, Nachname =?,e_mail = ? where id =?");
+    $statement->execute(array($username, $Vorname, $Nachname, $e_mail, $id));
+
 }
