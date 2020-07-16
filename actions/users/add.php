@@ -12,14 +12,16 @@
     <input type="text" name="Nachname"/><br><br>
     E-mail:<br>
     <input type="email" name="e_mail"/><br><br>
-    <input type="submit" name="submit" value="submit"/>
+    <input type="submit" name="create" value="create"/>
 </form>
 <?php
-require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/../../src/functions.php';
+require_once __DIR__ . '/../../src/User.php';
 session_start();
-$db = new PDO('mysql:host=localhost;  dbname=app', 'app', 'app');
+$db = connect();
+$user = new User();
 if(!isset($_SESSION['username'])){
-    header("Location: /index.php");
+    header("Location: /user-management/index.php");
     die();
 }
 if (isset($_POST['Username'])
@@ -28,10 +30,15 @@ if (isset($_POST['Username'])
          && isset($_POST['Vorname'])
             && isset($_POST['Nachname'])
                 && isset($_POST['e_mail'])
-                    && isset($_POST['submit'])
+                    && isset($_POST['create'])
                         && $_POST['Userpswd'] === $_POST['Userpswd2']){
-                            addUser($db, $_POST['Username'], $_POST['Vorname'], $_POST['Nachname'], $_POST['e_mail'], $_POST['Userpswd']);
-                            header("Location: /management.php");
+                            $user->setUsername($_POST['Username']);
+                            $user->setVorname($_POST['Vorname']);
+                            $user->setNachname($_POST['Nachname']);
+                            $user->setEMail($_POST['e_mail']);
+                            $user->setPassword($_POST['Userpswd']);
+                            $user->save($db);
+                            header("Location: /user-management/actions/management.php");
                             }
 
 

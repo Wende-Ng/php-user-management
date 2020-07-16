@@ -1,13 +1,14 @@
 <html>
 
 <?php
-require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/../src/functions.php';
+require_once __DIR__ . '/../src/User.php';
 session_start();
-$db = new PDO('mysql:host=localhost;  dbname=app', 'app', 'app');
+$db = connect();
 $statement = $db->query("SELECT * FROM user");
 $user = $statement->fetchAll(PDO::FETCH_ASSOC);
 if(!isset($_SESSION['username'])){
-    header("Location: /index.php");
+    header("Location: /user-management/index.php");
     die();
 }
 ?>
@@ -22,20 +23,20 @@ if(!isset($_SESSION['username'])){
     <div style="width: 50%; display: inline-block" align="left">
     <?php
     foreach ($user as $value): ?>
-        <a href="userEditor.php?id= <?php
-        echo $value['id']; ?>">Edit</a>
+        <a  href="users/edit.php?id=<?php
+        echo escape($value['id']);?>">Edit</a>
         <?php
         echo $value['username'], "\n", $value['Vorname'], "\n", $value['Nachname'], "\n", $value['e_mail'], "<br \>"; ?>
     <?php
     endforeach; ?>
     <?php
-    if(isset($_POST[logout])){
+    if(isset($_POST['logout'])){
         session_destroy();
-        header("Location: /index.php");
+        header("Location: /user-management/index.php");
     }
     ?>
     </div>
-    <form action= "addUser.php" method="post">
+    <form action= "users/add.php" method="post">
         <input type="submit" name="new" value="add user"/>
     </form>
 </div>
