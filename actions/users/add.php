@@ -21,7 +21,7 @@ session_start();
 $db = connect();
 $user = new User();
 if(!isset($_SESSION['username'])){
-    header("Location: /user-management/index.php");
+    header("Location: /user-management/actions/login.php");
     die();
 }
 if (isset($_POST['Username'])
