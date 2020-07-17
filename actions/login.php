@@ -36,7 +36,7 @@ if (isset($_POST['submit'])) {
         if(password_verify($password, $user->getPassword())) {
             unset($_SESSION['zaehler']);
             $_SESSION['username'] = $name;
-            header("Location: /user-management/actions/management.php");
+            header("Location: /user-management/actions/management");
         }
     }
     else{
